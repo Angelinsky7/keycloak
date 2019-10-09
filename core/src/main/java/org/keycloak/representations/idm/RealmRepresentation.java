@@ -47,6 +47,7 @@ public class RealmRepresentation {
     protected Integer ssoSessionIdleTimeoutRememberMe;
     protected Integer ssoSessionMaxLifespanRememberMe;
     protected Integer offlineSessionIdleTimeout;
+    protected String issuerUrl;
     // KEYCLOAK-7688 Offline Session Max for Offline Token
     protected Boolean offlineSessionMaxLifespanEnabled;
     protected Integer offlineSessionMaxLifespan;
@@ -334,6 +335,14 @@ public class RealmRepresentation {
 
     public void setOfflineSessionIdleTimeout(Integer offlineSessionIdleTimeout) {
         this.offlineSessionIdleTimeout = offlineSessionIdleTimeout;
+    }
+
+    public String getIssuerUrl() {
+        return issuerUrl;
+    }
+
+    public void setIssuerUrl(String issuerUrl) {
+        this.issuerUrl = issuerUrl;
     }
 
     // KEYCLOAK-7688 Offline Session Max for Offline Token
@@ -1136,4 +1145,5 @@ public class RealmRepresentation {
     public Boolean isUserManagedAccessAllowed() {
         return userManagedAccessAllowed;
     }
+
 }
