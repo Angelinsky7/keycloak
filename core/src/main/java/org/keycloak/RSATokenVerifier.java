@@ -40,12 +40,12 @@ public class RSATokenVerifier {
         return new RSATokenVerifier(tokenString);
     }
 
-    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl) throws VerificationException {
-        return RSATokenVerifier.create(tokenString).publicKey(publicKey).realmUrl(realmUrl).verify().getToken();
+    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, String issuerUrl) throws VerificationException {
+        return RSATokenVerifier.create(tokenString).publicKey(publicKey).realmUrl(realmUrl).issuerUrl(issuerUrl).verify().getToken();
     }
 
-    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, boolean checkActive, boolean checkTokenType) throws VerificationException {
-        return RSATokenVerifier.create(tokenString).publicKey(publicKey).realmUrl(realmUrl).checkActive(checkActive).checkTokenType(checkTokenType).verify().getToken();
+    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, String issuerUrl, boolean checkActive, boolean checkTokenType) throws VerificationException {
+        return RSATokenVerifier.create(tokenString).publicKey(publicKey).realmUrl(realmUrl).issuerUrl(issuerUrl).checkActive(checkActive).checkTokenType(checkTokenType).verify().getToken();
     }
 
     public RSATokenVerifier publicKey(PublicKey publicKey) {
@@ -55,6 +55,11 @@ public class RSATokenVerifier {
 
     public RSATokenVerifier realmUrl(String realmUrl) {
         tokenVerifier.realmUrl(realmUrl);
+        return this;
+    }
+
+    public RSATokenVerifier issuerUrl(String issuerUrl) {
+        tokenVerifier.issuerUrl(issuerUrl);
         return this;
     }
 
