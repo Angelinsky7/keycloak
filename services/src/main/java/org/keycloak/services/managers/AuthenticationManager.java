@@ -177,9 +177,11 @@ public class AuthenticationManager {
             Cookie cookie = headers.getCookies().get(KEYCLOAK_IDENTITY_COOKIE);
             if (cookie == null) return;
             String tokenString = cookie.getValue();
+            String realmUrl = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
 
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class)
-              .realmUrl(Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName()))
+              .realmUrl(realmUrl)
+              .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl))
               .checkActive(false)
               .checkTokenType(false)
               .withChecks(VALIDATE_IDENTITY_COOKIE);
@@ -587,12 +589,13 @@ public class AuthenticationManager {
     }
 
 
-    public static IdentityCookieToken createIdentityToken(KeycloakSession keycloakSession, RealmModel realm, UserModel user, UserSessionModel session, String issuer) {
+    public static IdentityCookieToken createIdentityToken(KeycloakSession keycloakSession, RealmModel realm, UserModel user, UserSessionModel session, String realmUrl, String issuer) {
         IdentityCookieToken token = new IdentityCookieToken();
         token.id(KeycloakModelUtils.generateId());
         token.issuedNow();
         token.subject(user.getId());
         token.issuer(issuer);
+        token.realm(realmUrl);
         token.type(TokenUtil.TOKEN_TYPE_KEYCLOAK_ID);
 
         if (session != null) {
@@ -617,8 +620,11 @@ public class AuthenticationManager {
 
     public static void createLoginCookie(KeycloakSession keycloakSession, RealmModel realm, UserModel user, UserSessionModel session, UriInfo uriInfo, ClientConnection connection) {
         String cookiePath = getIdentityCookiePath(realm, uriInfo);
-        String issuer = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
-        IdentityCookieToken identityCookieToken = createIdentityToken(keycloakSession, realm, user, session, issuer);
+
+        String realmUrl = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
+        String issuer = realm.getIssuerUrlOrDefault(realmUrl);
+
+        IdentityCookieToken identityCookieToken = createIdentityToken(keycloakSession, realm, user, session, realmUrl, issuer);
         String encoded = keycloakSession.tokens().encode(identityCookieToken);
         boolean secureOnly = realm.getSslRequired().isRequired(connection);
         int maxAge = NewCookie.DEFAULT_MAX_AGE;
@@ -1184,13 +1190,17 @@ public class AuthenticationManager {
 
     public static AuthResult verifyIdentityToken(KeycloakSession session, RealmModel realm, UriInfo uriInfo, ClientConnection connection, boolean checkActive, boolean checkTokenType,
                                                     boolean isCookie, String tokenString, HttpHeaders headers, Predicate<? super AccessToken>... additionalChecks) {
+        String realmUrl = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
+
         try {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class)
               .withDefaultChecks()
-              .realmUrl(Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName()))
+              .realmUrl(realmUrl)
+              .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl))
               .checkActive(checkActive)
               .checkTokenType(checkTokenType)
               .withChecks(additionalChecks);
+
             String kid = verifier.getHeader().getKeyId();
             String algorithm = verifier.getHeader().getAlgorithm().name();
 

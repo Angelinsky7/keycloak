@@ -244,6 +244,21 @@ public class PlainTextVaultProviderFactoryTest {
         }
 
         @Override
+        public String getIssuerUrl() {
+            return null;
+        }
+
+        @Override
+        public void setIssuerUrl(String issuerUrl) {
+          
+        }
+
+        @Override
+        public String getIssuerUrlOrDefault(String defaultValue) {
+            return null;
+        }
+
+        @Override
         public void setAttribute(String name, String value) {
           
         }

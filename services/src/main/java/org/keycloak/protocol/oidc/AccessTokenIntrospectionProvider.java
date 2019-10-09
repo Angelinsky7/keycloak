@@ -71,10 +71,12 @@ public class AccessTokenIntrospectionProvider implements TokenIntrospectionProvi
 
     protected AccessToken verifyAccessToken(String token) throws OAuthErrorException, IOException {
         AccessToken accessToken;
-
+        String realmUrl = Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName());
+        
         try {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(token, AccessToken.class)
-                    .realmUrl(Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName()));
+                    .realmUrl(realmUrl)
+                    .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl));
 
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
