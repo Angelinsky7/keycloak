@@ -396,6 +396,25 @@ public class RealmAdapter implements RealmModel, JpaModel<RealmEntity> {
     }
 
     @Override
+    public String getIssuerUrl() {
+        return getAttribute(RealmAttributes.ISSUER_URL);
+    }
+
+    @Override
+    public void setIssuerUrl(String issuerUrl) {
+        setAttribute(RealmAttributes.ISSUER_URL, issuerUrl);
+    }
+
+    @Override
+    public String getIssuerUrlOrDefault(String defaultValue) {
+        String result = getIssuerUrl();
+        if(result != null && !result.isEmpty()) {
+            return result;
+        }
+        return defaultValue;
+    }
+
+    @Override
     public int getNotBefore() {
         return realm.getNotBefore();
     }

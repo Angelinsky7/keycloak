@@ -131,9 +131,12 @@ public class UserInfoEndpoint {
         }
 
         AccessToken token;
+        String realmUrl = Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName());
+        
         try {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withDefaultChecks()
-                    .realmUrl(Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName()));
+                    .realmUrl(realmUrl)
+                    .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl));
 
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
@@ -201,11 +204,13 @@ public class UserInfoEndpoint {
         OIDCAdvancedConfigWrapper cfg = OIDCAdvancedConfigWrapper.fromClientModel(clientModel);
 
         if (cfg.isUserInfoSignatureRequired()) {
-            String issuerUrl = Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName());
+            String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
+
             String audience = clientModel.getClientId();
             claims.put("iss", issuerUrl);
+            claims.put("realm", realmUrl);
             claims.put("aud", audience);
-
+            
             String signatureAlgorithm = session.tokens().signatureAlgorithm(TokenCategory.USERINFO);
 
             SignatureProvider signatureProvider = session.getProvider(SignatureProvider.class, signatureAlgorithm);

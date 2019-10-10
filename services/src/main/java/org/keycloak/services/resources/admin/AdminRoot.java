@@ -161,7 +161,7 @@ public class AdminRoot {
         } catch (JWSInputException e) {
             throw new UnauthorizedException("Bearer token format error");
         }
-        String realmName = token.getIssuer().substring(token.getIssuer().lastIndexOf('/') + 1);
+        String realmName = token.getRealm().substring(token.getRealm().lastIndexOf('/') + 1);
         RealmManager realmManager = new RealmManager(session);
         RealmModel realm = realmManager.getRealmByName(realmName);
         if (realm == null) {

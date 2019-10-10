@@ -110,6 +110,12 @@ public interface RealmModel extends RoleContainerModel {
 
     boolean isEditUsernameAllowed();
 
+    String getIssuerUrl();
+
+    void setIssuerUrl(String issuerUrl);
+
+    String getIssuerUrlOrDefault(String defaultValue);
+
     void setEditUsernameAllowed(boolean editUsernameAllowed);
 
     boolean isUserManagedAccessAllowed();

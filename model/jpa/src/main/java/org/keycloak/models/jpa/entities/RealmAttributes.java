@@ -34,4 +34,6 @@ public interface RealmAttributes {
     String OFFLINE_SESSION_MAX_LIFESPAN_ENABLED = "offlineSessionMaxLifespanEnabled";
 
     String OFFLINE_SESSION_MAX_LIFESPAN = "offlineSessionMaxLifespan";
+
+    String ISSUER_URL = "issuerUrl";
 }

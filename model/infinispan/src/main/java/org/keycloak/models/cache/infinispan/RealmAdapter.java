@@ -371,6 +371,24 @@ public class RealmAdapter implements CachedRealmModel {
     }
 
     @Override
+    public String getIssuerUrl() {
+        if (isUpdated()) return updated.getIssuerUrl();
+        return cached.getIssuerUrl();
+    }
+
+    @Override
+    public void setIssuerUrl(String issuerUrl) {
+        getDelegateForUpdate();
+        updated.setIssuerUrl(issuerUrl);
+    }
+
+    @Override
+    public String getIssuerUrlOrDefault(String defaultValue) {
+        if (isUpdated()) return updated.getIssuerUrlOrDefault(defaultValue);
+        return cached.getIssuerUrlOrDefault(defaultValue);
+    }
+
+    @Override
     public boolean isRevokeRefreshToken() {
         if (isUpdated()) return updated.isRevokeRefreshToken();
         return cached.isRevokeRefreshToken();
