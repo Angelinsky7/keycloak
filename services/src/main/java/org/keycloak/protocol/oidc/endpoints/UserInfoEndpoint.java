@@ -204,7 +204,6 @@ public class UserInfoEndpoint {
         OIDCAdvancedConfigWrapper cfg = OIDCAdvancedConfigWrapper.fromClientModel(clientModel);
 
         if (cfg.isUserInfoSignatureRequired()) {
-            String realmUrl = Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName());
             String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
 
             String audience = clientModel.getClientId();

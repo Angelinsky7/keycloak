@@ -39,9 +39,17 @@ public class RSATokenVerifier {
     public static RSATokenVerifier create(String tokenString) {
         return new RSATokenVerifier(tokenString);
     }
+    
+    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl) throws VerificationException {
+        return verifyToken(tokenString, publicKey, realmUrl, realmUrl);
+    }
 
     public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, String issuerUrl) throws VerificationException {
         return RSATokenVerifier.create(tokenString).publicKey(publicKey).realmUrl(realmUrl).issuerUrl(issuerUrl).verify().getToken();
+    }
+
+    public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, boolean checkActive, boolean checkTokenType) throws VerificationException {
+        return verifyToken(tokenString, publicKey, realmUrl, realmUrl, checkActive, checkTokenType);
     }
 
     public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl, String issuerUrl, boolean checkActive, boolean checkTokenType) throws VerificationException {
