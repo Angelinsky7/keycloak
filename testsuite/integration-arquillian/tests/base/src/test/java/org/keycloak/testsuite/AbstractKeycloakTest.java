@@ -77,6 +77,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -186,13 +187,8 @@ public abstract class AbstractKeycloakTest {
     }
 
     public void reconnectAdminClient() throws Exception {
-        if (adminClient != null && !adminClient.isClosed()) {
-            adminClient.close();
-        }
-
-        String authServerContextRoot = suiteContext.getAuthServerInfo().getContextRoot().toString();
-        adminClient = AdminClientUtil.createAdminClient(suiteContext.isAdapterCompatTesting(), authServerContextRoot);
-        testContext.setAdminClient(adminClient);
+        testContext.reconnectAdminClient();
+        adminClient = testContext.getAdminClient();
     }
 
     protected void beforeAbstractKeycloakTestRealmImport() throws Exception {
@@ -215,11 +211,8 @@ public abstract class AbstractKeycloakTest {
             }
         } else {
             log.info("calling all TestCleanup");
-            // Logout all users after the test
-            List<RealmRepresentation> realms = testContext.getTestRealmReps();
-            for (RealmRepresentation realm : realms) {
-                adminClient.realm(realm.getRealm()).logoutAll();
-            }
+            // Remove all sessions
+            testContext.getTestRealmReps().stream().forEach((r)->testingClient.testing().removeUserSessions(r.getRealm()));
 
             // Cleanup objects
             for (TestCleanup cleanup : testContext.getCleanups().values()) {
