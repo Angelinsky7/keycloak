@@ -416,6 +416,16 @@ public class RealmAdapter implements RealmModel, JpaModel<RealmEntity> {
     }
 
     @Override
+    public void setRealmUrlCheckDeactivated(Boolean realmUrlCheckDeactivated){
+        setAttribute(RealmAttributes.IS_REALMURL_CHECK_DEACTIVATED, realmUrlCheckDeactivated);
+    }
+
+    @Override
+    public Boolean isRealmUrlCheckDeactivated(){
+        return getAttribute(RealmAttributes.IS_REALMURL_CHECK_DEACTIVATED, false);
+    }
+
+    @Override
     public int getNotBefore() {
         return realm.getNotBefore();
     }

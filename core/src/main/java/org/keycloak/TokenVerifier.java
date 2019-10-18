@@ -114,7 +114,7 @@ public class TokenVerifier<T extends JsonWebToken> {
         }
     };
 
-    // TODO(demarco): Added for the sake of the correct check
+    // NOTE(angelinsky7): Added for the sake of the correct check
     public static class IssuerUrlCheck implements Predicate<JsonWebToken> {
 
         private static final IssuerUrlCheck NULL_INSTANCE = new IssuerUrlCheck(null);

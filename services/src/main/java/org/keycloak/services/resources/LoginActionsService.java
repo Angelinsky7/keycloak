@@ -485,8 +485,8 @@ public class LoginActionsService {
                 throw new ExplainedTokenVerificationException(aToken, Errors.SSL_REQUIRED, Messages.HTTPS_REQUIRED);
             }
 
-            //TODO(demarco): not the issuer url but the realm url
-            //TODO(demarco): for now i don't know what to do...
+            //TODO(angelinsky7): not the issuer url but the realm url
+            //TODO(angelinsky7): for now i don't know what to do...
             TokenVerifier<DefaultActionTokenKey> verifier = tokenVerifier
                     .withChecks(
                             // Token introspection checks

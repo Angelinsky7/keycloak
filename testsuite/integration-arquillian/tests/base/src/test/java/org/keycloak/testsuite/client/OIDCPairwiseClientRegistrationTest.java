@@ -391,7 +391,7 @@ public class OIDCPairwiseClientRegistrationTest extends AbstractClientRegistrati
         // its iss Claim Value MUST be the same as in the ID Token issued when the original authentication occurred
         Assert.assertEquals(idToken.getIssuer(), refreshedRefreshToken.getIssuer());
 
-        // TODO(demarco): no need to store realm name in issuer anymore
+        // NOTE(angelinsky7): no need to store realm name in issuer anymore
         Assert.assertEquals(idToken.getRealm(), refreshedRefreshToken.getRealm());
 
         // its sub Claim Value MUST be the same as in the ID Token issued when the original authentication occurred

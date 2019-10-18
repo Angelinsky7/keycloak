@@ -277,7 +277,7 @@ public class AssertAdminEvents implements TestRule {
             AccessToken token = input.readJsonContent(AccessToken.class);
 
             AuthDetailsRepresentation authDetails = new AuthDetailsRepresentation();
-            // TODO(demarco): New assumption that the realm contains realm name
+            // NOTE(angelinsky7): New assumption that the realm contains realm name
             // String realmId = token.getIssuer().substring(token.getIssuer().lastIndexOf('/') + 1);
             String realmId = token.getRealm().substring(token.getRealm().lastIndexOf('/') + 1);
             authDetails.setRealmId(realmId);
