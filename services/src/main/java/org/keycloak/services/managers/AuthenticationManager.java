@@ -16,6 +16,27 @@
  */
 package org.keycloak.services.managers;
 
+import static org.keycloak.protocol.oidc.endpoints.AuthorizationEndpoint.LOGIN_SESSION_NOTE_ADDITIONAL_REQ_PARAMS_PREFIX;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.OAuth2Constants;
@@ -45,6 +66,7 @@ import org.keycloak.events.Errors;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.forms.login.LoginFormsProvider;
+import org.keycloak.models.AccountRoles;
 import org.keycloak.models.ActionTokenKeyModel;
 import org.keycloak.models.ActionTokenStoreProvider;
 import org.keycloak.models.AuthenticatedClientSessionModel;
@@ -78,27 +100,6 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.CommonClientSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
 import org.keycloak.util.TokenUtil;
-
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.keycloak.models.AccountRoles;
-
-import static org.keycloak.protocol.oidc.endpoints.AuthorizationEndpoint.LOGIN_SESSION_NOTE_ADDITIONAL_REQ_PARAMS_PREFIX;
 
 /**
  * Stateless object that manages authentication
@@ -1191,6 +1192,7 @@ public class AuthenticationManager {
     public static AuthResult verifyIdentityToken(KeycloakSession session, RealmModel realm, UriInfo uriInfo, ClientConnection connection, boolean checkActive, boolean checkTokenType,
                                                     boolean isCookie, String tokenString, HttpHeaders headers, Predicate<? super AccessToken>... additionalChecks) {
         String realmUrl = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
+        String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
 
         try {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class)
@@ -1200,6 +1202,10 @@ public class AuthenticationManager {
               .checkActive(checkActive)
               .checkTokenType(checkTokenType)
               .withChecks(additionalChecks);
+
+            if(!realmUrl.equals(issuerUrl) && realm.isRealmUrlCheckDeactivated() ){
+                verifier = verifier.checkRealmUrl(false);
+            }
 
             String kid = verifier.getHeader().getKeyId();
             String algorithm = verifier.getHeader().getAlgorithm().name();
