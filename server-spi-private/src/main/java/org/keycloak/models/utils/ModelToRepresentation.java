@@ -289,7 +289,6 @@ public class ModelToRepresentation {
         rep.setFailureFactor(realm.getFailureFactor());
         rep.setUserManagedAccessAllowed(realm.isUserManagedAccessAllowed());
         rep.setIssuerUrl(realm.getIssuerUrl());
-        rep.setRealmUrlCheckDeactivated(realm.isRealmUrlCheckDeactivated());
 
         rep.setEventsEnabled(realm.isEventsEnabled());
         if (realm.getEventsExpiration() != 0) {

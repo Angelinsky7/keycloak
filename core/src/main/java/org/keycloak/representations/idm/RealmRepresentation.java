@@ -17,16 +17,15 @@
 
 package org.keycloak.representations.idm;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.keycloak.common.util.MultivaluedHashMap;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.keycloak.common.util.MultivaluedHashMap;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -49,7 +48,6 @@ public class RealmRepresentation {
     protected Integer ssoSessionMaxLifespanRememberMe;
     protected Integer offlineSessionIdleTimeout;
     protected String issuerUrl;
-    protected Boolean realmUrlCheckDeactivated;
     // KEYCLOAK-7688 Offline Session Max for Offline Token
     protected Boolean offlineSessionMaxLifespanEnabled;
     protected Integer offlineSessionMaxLifespan;
@@ -345,14 +343,6 @@ public class RealmRepresentation {
 
     public void setIssuerUrl(String issuerUrl) {
         this.issuerUrl = issuerUrl;
-    }
-
-    public void setRealmUrlCheckDeactivated(Boolean realmUrlCheckDeactivated){
-        this.realmUrlCheckDeactivated = realmUrlCheckDeactivated;
-    }
-
-    public Boolean isRealmUrlCheckDeactivated(){
-        return realmUrlCheckDeactivated;
     }
 
     // KEYCLOAK-7688 Offline Session Max for Offline Token
