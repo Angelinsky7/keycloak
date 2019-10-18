@@ -206,6 +206,30 @@
                                     </resources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>copy-vault</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${auth.server.home}/standalone/configuration/vault</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${common.resources}/vault</directory>
+                                            <includes>
+                                                <include>master_smtp__key</include>
+                                                <include>test_smtp__key</include>
+                                                <include>consumer_oidc__idp</include>
+                                                <include>master_smtp__password</include>
+                                                <include>master_ldap__bindCredential</include>
+                                                <include>test_ldap__bindCredential</include>
+                                                <include>admin-client-test_ldap__bindCredential</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -431,6 +455,9 @@
                                                 <property name="jdbc.mvn.groupId">${jdbc.mvn.groupId}</property>
                                                 <property name="jdbc.mvn.artifactId">${jdbc.mvn.artifactId}</property>
                                                 <property name="jdbc.mvn.version">${jdbc.mvn.version}</property>
+                                                <property name="keycloak.connectionsJpa.url">${keycloak.connectionsJpa.url}</property>
+                                                <property name="keycloak.connectionsJpa.user">${keycloak.connectionsJpa.user}</property>
+                                                <property name="keycloak.connectionsJpa.password">${keycloak.connectionsJpa.password}</property>
                                             </ant>
                                         </target>
                                     </configuration>

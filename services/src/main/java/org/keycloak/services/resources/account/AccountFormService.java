@@ -200,7 +200,7 @@ public class AccountFormService extends AbstractSecuredLocalService {
 
             UserSessionModel userSession = auth.getSession();
 
-            String tabId = request.getUri().getQueryParameters().getFirst(org.keycloak.models.Constants.TAB_ID);
+            String tabId = session.getContext().getUri().getQueryParameters().getFirst(org.keycloak.models.Constants.TAB_ID);
             if (tabId != null) {
                 AuthenticationSessionModel authSession = new AuthenticationSessionManager(session).getAuthenticationSessionByIdAndClient(realm, userSession.getId(), client, tabId);
                 if (authSession != null) {
@@ -585,7 +585,7 @@ public class AccountFormService extends AbstractSecuredLocalService {
             ServicesLogger.LOGGER.failedToUpdatePassword(me);
             setReferrerOnPage();
             errorEvent.detail(Details.REASON, me.getMessage()).error(Errors.PASSWORD_REJECTED);
-            return account.setError(Response.Status.INTERNAL_SERVER_ERROR, me.getMessage(), me.getParameters()).createResponse(AccountPages.PASSWORD);
+            return account.setError(Response.Status.NOT_ACCEPTABLE, me.getMessage(), me.getParameters()).createResponse(AccountPages.PASSWORD);
         } catch (Exception ape) {
             ServicesLogger.LOGGER.failedToUpdatePassword(ape);
             setReferrerOnPage();
