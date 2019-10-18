@@ -17,15 +17,6 @@
 
 package org.keycloak.models.cache.infinispan.entities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.keycloak.common.enums.SslRequired;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.component.ComponentModel;
@@ -43,6 +34,15 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.RequiredActionProviderModel;
 import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.WebAuthnPolicy;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -65,7 +65,6 @@ public class CachedRealm extends AbstractExtendableRevisioned {
     protected boolean identityFederationEnabled;
     protected boolean editUsernameAllowed;
     protected String issuerUrl;
-    protected boolean realmUrlCheckDeactivated;
     //--- brute force settings
     protected boolean bruteForceProtected;
     protected boolean permanentLockout;
@@ -176,7 +175,6 @@ public class CachedRealm extends AbstractExtendableRevisioned {
         identityFederationEnabled = model.isIdentityFederationEnabled();
         editUsernameAllowed = model.isEditUsernameAllowed();
         issuerUrl = model.getIssuerUrl();
-        realmUrlCheckDeactivated = model.isRealmUrlCheckDeactivated();
         //--- brute force settings
         bruteForceProtected = model.isBruteForceProtected();
         permanentLockout = model.isPermanentLockout();
@@ -413,14 +411,6 @@ public class CachedRealm extends AbstractExtendableRevisioned {
             return issuerUrl;
         }
         return defaultValue;
-    }
-
-    public void setRealmUrlCheckDeactivated(Boolean realmUrlCheckDeactivated){
-        this.realmUrlCheckDeactivated = realmUrlCheckDeactivated;
-    }
-
-    public Boolean isRealmUrlCheckDeactivated(){
-        return realmUrlCheckDeactivated;
     }
 
     public String getDefaultSignatureAlgorithm() {

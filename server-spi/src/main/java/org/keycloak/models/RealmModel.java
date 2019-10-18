@@ -17,12 +17,6 @@
 
 package org.keycloak.models;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.keycloak.common.enums.SslRequired;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.provider.ProviderEvent;
@@ -30,6 +24,8 @@ import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.UserStorageProviderModel;
 import org.keycloak.storage.client.ClientStorageProvider;
 import org.keycloak.storage.client.ClientStorageProviderModel;
+
+import java.util.*;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -119,10 +115,6 @@ public interface RealmModel extends RoleContainerModel {
     void setIssuerUrl(String issuerUrl);
 
     String getIssuerUrlOrDefault(String defaultValue);
-
-    void setRealmUrlCheckDeactivated(Boolean isRealmUrlCheckDeactivated);
-
-    Boolean isRealmUrlCheckDeactivated();
 
     void setEditUsernameAllowed(boolean editUsernameAllowed);
 

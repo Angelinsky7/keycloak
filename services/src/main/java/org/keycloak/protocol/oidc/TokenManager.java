@@ -760,7 +760,7 @@ public class TokenManager {
             idToken.issuedNow();
             idToken.issuedFor(accessToken.getIssuedFor());
             idToken.issuer(accessToken.getIssuer());
-            // NOTE(angelinsky7): added to pass the realm
+            // TODO(demarco): added to pass the realm
             idToken.realm(accessToken.getRealm());
             idToken.setNonce(accessToken.getNonce());
             idToken.setAuthTime(accessToken.getAuthTime());

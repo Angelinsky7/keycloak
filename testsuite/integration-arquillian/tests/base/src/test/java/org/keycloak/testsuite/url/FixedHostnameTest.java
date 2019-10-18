@@ -144,7 +144,7 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
 
         ClientInitialAccessPresentation initialAccess = testAdminClient.realm(realm).clientInitialAccess().create(rep);
         JsonWebToken token = new JWSInput(initialAccess.getToken()).readJsonContent(JsonWebToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, token.getRealm());
 
         ClientRegistration clientReg = ClientRegistration.create().url(authServerUrl, realm).build();
@@ -156,7 +156,7 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
 
         String registrationAccessToken = response.getRegistrationAccessToken();
         JsonWebToken registrationToken = new JWSInput(registrationAccessToken).readJsonContent(JsonWebToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, registrationToken.getRealm());
     }
 
@@ -166,14 +166,14 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
         OAuthClient.AccessTokenResponse tokenResponse = oauth.doGrantAccessTokenRequest("password", "test-user@localhost", "password");
 
         AccessToken token = new JWSInput(tokenResponse.getAccessToken()).readJsonContent(AccessToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, token.getRealm());
 
         String introspection = oauth.introspectAccessTokenWithClientCredential(oauth.getClientId(), "password", tokenResponse.getAccessToken());
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode introspectionNode = objectMapper.readTree(introspection);
         assertTrue(introspectionNode.get("active").asBoolean());
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, introspectionNode.get("realm").asText());
     }
 
