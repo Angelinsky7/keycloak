@@ -179,13 +179,15 @@ public class AuthenticationManager {
             if (cookie == null) return;
             String tokenString = cookie.getValue();
             String realmUrl = Urls.realmIssuer(uriInfo.getBaseUri(), realm.getName());
+            String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
 
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class)
               .realmUrl(realmUrl)
-              .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl))
+              .issuerUrl(issuerUrl)
               .checkActive(false)
               .checkTokenType(false)
-              .withChecks(VALIDATE_IDENTITY_COOKIE);
+              .withChecks(VALIDATE_IDENTITY_COOKIE)
+              .checkRealmUrl(realmUrl.equals(issuerUrl) || !realm.isRealmUrlCheckDeactivated());
 
             String kid = verifier.getHeader().getKeyId();
             String algorithm = verifier.getHeader().getAlgorithm().name();
@@ -1198,14 +1200,11 @@ public class AuthenticationManager {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class)
               .withDefaultChecks()
               .realmUrl(realmUrl)
-              .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl))
+              .issuerUrl(issuerUrl)
               .checkActive(checkActive)
               .checkTokenType(checkTokenType)
-              .withChecks(additionalChecks);
-
-            if(!realmUrl.equals(issuerUrl) && realm.isRealmUrlCheckDeactivated() ){
-                verifier = verifier.checkRealmUrl(false);
-            }
+              .withChecks(additionalChecks)
+              .checkRealmUrl(realmUrl.equals(issuerUrl) || !realm.isRealmUrlCheckDeactivated());
 
             String kid = verifier.getHeader().getKeyId();
             String algorithm = verifier.getHeader().getAlgorithm().name();
