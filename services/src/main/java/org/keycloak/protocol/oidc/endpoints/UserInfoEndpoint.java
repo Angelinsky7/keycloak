@@ -205,8 +205,6 @@ public class UserInfoEndpoint {
         OIDCAdvancedConfigWrapper cfg = OIDCAdvancedConfigWrapper.fromClientModel(clientModel);
 
         if (cfg.isUserInfoSignatureRequired()) {
-            String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
-
             String audience = clientModel.getClientId();
             claims.put("iss", issuerUrl);
             claims.put("realm", realmUrl);
