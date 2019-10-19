@@ -37,6 +37,7 @@ import org.keycloak.common.ClientConnection;
 import org.keycloak.common.VerificationException;
 import org.keycloak.crypto.SignatureProvider;
 import org.keycloak.crypto.SignatureSignerContext;
+import org.keycloak.crypto.SignatureVerifierContext;
 import org.keycloak.events.Details;
 import org.keycloak.events.Errors;
 import org.keycloak.events.EventBuilder;
