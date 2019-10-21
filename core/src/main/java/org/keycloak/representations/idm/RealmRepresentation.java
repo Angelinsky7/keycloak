@@ -17,16 +17,15 @@
 
 package org.keycloak.representations.idm;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.keycloak.common.util.MultivaluedHashMap;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.keycloak.common.util.MultivaluedHashMap;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -49,7 +48,6 @@ public class RealmRepresentation {
     protected Integer ssoSessionMaxLifespanRememberMe;
     protected Integer offlineSessionIdleTimeout;
     protected String issuerUrl;
-    protected Boolean realmUrlCheckDeactivated;
     // KEYCLOAK-7688 Offline Session Max for Offline Token
     protected Boolean offlineSessionMaxLifespanEnabled;
     protected Integer offlineSessionMaxLifespan;
@@ -109,6 +107,16 @@ public class RealmRepresentation {
     protected Integer otpPolicyLookAheadWindow;
     protected Integer otpPolicyPeriod;
     protected List<String> otpSupportedApplications;
+    protected String webAuthnPolicyRpEntityName;
+    protected List<String> webAuthnPolicySignatureAlgorithms;
+    protected String webAuthnPolicyRpId;
+    protected String webAuthnPolicyAttestationConveyancePreference;
+    protected String webAuthnPolicyAuthenticatorAttachment;
+    protected String webAuthnPolicyRequireResidentKey;
+    protected String webAuthnPolicyUserVerificationRequirement;
+    protected Integer webAuthnPolicyCreateTimeout;
+    protected Boolean webAuthnPolicyAvoidSameAuthenticatorRegister;
+    protected List<String> webAuthnPolicyAcceptableAaguids;
 
     protected List<UserRepresentation> users;
     protected List<UserRepresentation> federatedUsers;
@@ -335,14 +343,6 @@ public class RealmRepresentation {
 
     public void setIssuerUrl(String issuerUrl) {
         this.issuerUrl = issuerUrl;
-    }
-
-    public void setRealmUrlCheckDeactivated(Boolean realmUrlCheckDeactivated){
-        this.realmUrlCheckDeactivated = realmUrlCheckDeactivated;
-    }
-
-    public Boolean isRealmUrlCheckDeactivated(){
-        return realmUrlCheckDeactivated;
     }
 
     // KEYCLOAK-7688 Offline Session Max for Offline Token
@@ -933,6 +933,86 @@ public class RealmRepresentation {
 
     public void setOtpSupportedApplications(List<String> otpSupportedApplications) {
         this.otpSupportedApplications = otpSupportedApplications;
+    }
+
+    public String getWebAuthnPolicyRpEntityName() {
+        return webAuthnPolicyRpEntityName;
+    }
+
+    public void setWebAuthnPolicyRpEntityName(String webAuthnPolicyRpEntityName) {
+        this.webAuthnPolicyRpEntityName = webAuthnPolicyRpEntityName;
+    }
+
+    public List<String> getWebAuthnPolicySignatureAlgorithms() {
+        return webAuthnPolicySignatureAlgorithms;
+    }
+
+    public void setWebAuthnPolicySignatureAlgorithms(List<String> webAuthnPolicySignatureAlgorithms) {
+        this.webAuthnPolicySignatureAlgorithms = webAuthnPolicySignatureAlgorithms;
+    }
+
+    public String getWebAuthnPolicyRpId() {
+        return webAuthnPolicyRpId;
+    }
+
+    public void setWebAuthnPolicyRpId(String webAuthnPolicyRpId) {
+        this.webAuthnPolicyRpId = webAuthnPolicyRpId;
+    }
+
+    public String getWebAuthnPolicyAttestationConveyancePreference() {
+        return webAuthnPolicyAttestationConveyancePreference;
+    }
+
+    public void setWebAuthnPolicyAttestationConveyancePreference(String webAuthnPolicyAttestationConveyancePreference) {
+        this.webAuthnPolicyAttestationConveyancePreference = webAuthnPolicyAttestationConveyancePreference;
+    }
+
+    public String getWebAuthnPolicyAuthenticatorAttachment() {
+        return webAuthnPolicyAuthenticatorAttachment;
+    }
+
+    public void setWebAuthnPolicyAuthenticatorAttachment(String webAuthnPolicyAuthenticatorAttachment) {
+        this.webAuthnPolicyAuthenticatorAttachment = webAuthnPolicyAuthenticatorAttachment;
+    }
+
+    public String getWebAuthnPolicyRequireResidentKey() {
+        return webAuthnPolicyRequireResidentKey;
+    }
+
+    public void setWebAuthnPolicyRequireResidentKey(String webAuthnPolicyRequireResidentKey) {
+        this.webAuthnPolicyRequireResidentKey = webAuthnPolicyRequireResidentKey;
+    }
+
+    public String getWebAuthnPolicyUserVerificationRequirement() {
+        return webAuthnPolicyUserVerificationRequirement;
+    }
+
+    public void setWebAuthnPolicyUserVerificationRequirement(String webAuthnPolicyUserVerificationRequirement) {
+        this.webAuthnPolicyUserVerificationRequirement = webAuthnPolicyUserVerificationRequirement;
+    }
+
+    public Integer getWebAuthnPolicyCreateTimeout() {
+        return webAuthnPolicyCreateTimeout;
+    }
+
+    public void setWebAuthnPolicyCreateTimeout(Integer webAuthnPolicyCreateTimeout) {
+        this.webAuthnPolicyCreateTimeout = webAuthnPolicyCreateTimeout;
+    }
+
+    public Boolean isWebAuthnPolicyAvoidSameAuthenticatorRegister() {
+        return webAuthnPolicyAvoidSameAuthenticatorRegister;
+    }
+
+    public void setWebAuthnPolicyAvoidSameAuthenticatorRegister(Boolean webAuthnPolicyAvoidSameAuthenticatorRegister) {
+        this.webAuthnPolicyAvoidSameAuthenticatorRegister = webAuthnPolicyAvoidSameAuthenticatorRegister;
+    }
+
+    public List<String> getWebAuthnPolicyAcceptableAaguids() {
+        return webAuthnPolicyAcceptableAaguids;
+    }
+
+    public void setWebAuthnPolicyAcceptableAaguids(List<String> webAuthnPolicyAcceptableAaguids) {
+        this.webAuthnPolicyAcceptableAaguids = webAuthnPolicyAcceptableAaguids;
     }
 
     public String getBrowserFlow() {

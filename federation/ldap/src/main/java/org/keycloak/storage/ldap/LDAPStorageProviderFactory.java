@@ -149,6 +149,10 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
                 .type(ProviderConfigProperty.BOOLEAN_TYPE)
                 .defaultValue("false")
                 .add()
+                .property().name(LDAPConstants.TRUST_EMAIL)
+                .type(ProviderConfigProperty.BOOLEAN_TYPE)
+                .defaultValue("false")
+                .add()
                 .property().name(LDAPConstants.USE_TRUSTSTORE_SPI)
                 .type(ProviderConfigProperty.STRING_TYPE)
                 .defaultValue("ldapsOnly")
@@ -467,6 +471,7 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
             @Override
             public void run(KeycloakSession session) {
                 RealmModel realm = session.realms().getRealm(realmId);
+                session.getContext().setRealm(realm);
                 session.getProvider(UserStorageProvider.class, model);
                 List<ComponentModel> mappers = realm.getComponents(model.getId(), LDAPStorageMapper.class.getName());
                 for (ComponentModel mapperModel : mappers) {
@@ -508,6 +513,13 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
         return syncResult;
     }
 
+    /**
+     *  !! This function must be called from try-with-resources block, otherwise Vault secrets may be leaked !!
+     * @param sessionFactory
+     * @param realmId
+     * @param model
+     * @return
+     */
     private LDAPQuery createQuery(KeycloakSessionFactory sessionFactory, final String realmId, final ComponentModel model) {
         class QueryHolder {
             LDAPQuery query;
@@ -518,6 +530,8 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
 
             @Override
             public void run(KeycloakSession session) {
+                session.getContext().setRealm(session.realms().getRealm(realmId));
+
                 LDAPStorageProvider ldapFedProvider = (LDAPStorageProvider)session.getProvider(UserStorageProvider.class, model);
                 RealmModel realm = session.realms().getRealm(realmId);
                 queryHolder.query = LDAPUtils.createQueryForUserSearch(ldapFedProvider, realm);
@@ -546,6 +560,7 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
                     public void run(KeycloakSession session) {
                         LDAPStorageProvider ldapFedProvider = (LDAPStorageProvider)session.getProvider(UserStorageProvider.class, fedModel);
                         RealmModel currentRealm = session.realms().getRealm(realmId);
+                        session.getContext().setRealm(currentRealm);
 
                         String username = LDAPUtils.getUsername(ldapUser, ldapFedProvider.getLdapIdentityStore().getConfig());
                         exists.value = true;
@@ -595,6 +610,8 @@ public class LDAPStorageProviderFactory implements UserStorageProviderFactory<LD
                         public void run(KeycloakSession session) {
                             LDAPStorageProvider ldapFedProvider = (LDAPStorageProvider)session.getProvider(UserStorageProvider.class, fedModel);
                             RealmModel currentRealm = session.realms().getRealm(realmId);
+                            session.getContext().setRealm(currentRealm);
+
                             String username = null;
                             try {
                                 username = LDAPUtils.getUsername(ldapUser, ldapFedProvider.getLdapIdentityStore().getConfig());

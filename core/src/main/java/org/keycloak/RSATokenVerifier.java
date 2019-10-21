@@ -39,7 +39,7 @@ public class RSATokenVerifier {
     public static RSATokenVerifier create(String tokenString) {
         return new RSATokenVerifier(tokenString);
     }
-
+    
     public static AccessToken verifyToken(String tokenString, PublicKey publicKey, String realmUrl) throws VerificationException {
         return verifyToken(tokenString, publicKey, realmUrl, realmUrl);
     }

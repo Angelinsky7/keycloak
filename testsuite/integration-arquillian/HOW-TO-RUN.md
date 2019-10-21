@@ -376,6 +376,29 @@ mvn -f testsuite/integration-arquillian/tests/other/base-ui/pom.xml \
     -Dappium.avd=Nexus_5X_API_27
 ```
 
+## WebAuthN tests
+The WebAuthN tests, in Keycloak, can be only executed with Chrome browser, because the Chrome has feature _WebAuthenticationTestingApi_,
+which simulate hardware authentication device. For automated WebAuthN testing, this approach seems like the best choice so far.
+To enabling the feature you have to add flag to _chromeArguments_. In each WebAuthN test should be method with ``@Before`` annotation
+to verify the browser properties.
+
+#### Example of verifying the browser properties
+```
+@Before
+void verifyEnvironment(WebDriver driver) {
+    WebAuthnAssume.assumeChrome(driver);
+}
+```
+
+#### Run all WebAuthN tests
+```
+mvn -f testsuite/integration-arquillian/tests/base/pom.xml \
+    clean test \
+    -Dtest=org.keycloak.testsuite.webauthn.**.*Test \
+    -Dbrowser=chrome \
+    -DchromeArguments=--enable-web-authentication-testing-api
+```
+
 ## Social Login
 The social login tests require setup of all social networks including an example social user. These details can't be 
 shared as it would result in the clients and users eventually being blocked. By default these tests are skipped.
@@ -459,6 +482,7 @@ Note: We currently do not support SSL in IE.
 
 #### Automatic driver downloads
 You can rely on automatic driver downloads which is provided by [Arquillian Drone](http://arquillian.org/arquillian-extension-drone/#_automatic_download). To do so just omit the `-Dwebdriver.{browser}.driver` CLI argument when running the tests.
+By default latest driver version is always downloaded. To download a specific version, add `-DfirefoxDriverVersion`, `-DchromeDriverVersion` or `-DieDriverVersion` CLI argument.
 
 #### Mobile browsers
 The support for testing with the mobile browsers is implemented using the [Appium](http://appium.io/) project.

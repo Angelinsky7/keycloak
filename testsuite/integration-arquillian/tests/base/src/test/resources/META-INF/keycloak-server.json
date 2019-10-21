@@ -184,5 +184,12 @@
             "sslCertChainPrefix": "x-ssl-client-cert-chain",
             "certificateChainLength": 1
         }
+    },
+
+    "vault": {
+        "files-plaintext": {
+            "dir": "target/dependency/vault",
+            "enabled": "${keycloak.vault.plaintext.provider.enabled:false}"
+        }
     }
 }

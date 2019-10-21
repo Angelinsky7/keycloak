@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.client.registration.Auth;
@@ -24,11 +22,11 @@ import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.testsuite.AbstractKeycloakTest;
 import org.keycloak.testsuite.arquillian.AuthServerTestEnricher;
 import org.keycloak.testsuite.util.AdminClientUtil;
+import org.keycloak.testsuite.util.ContainerAssume;
 import org.keycloak.testsuite.util.OAuthClient;
 import org.wildfly.extras.creaper.core.online.OnlineManagementClient;
 import org.wildfly.extras.creaper.core.online.operations.admin.Administration;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +53,11 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
         customHostname.getAttributes().put("hostname", "custom-domain.127.0.0.1.nip.io");
 
         testRealms.add(customHostname);
+    }
+
+    @BeforeClass
+    public static void enabled() {
+        ContainerAssume.assumeNotAuthServerRemote();
     }
 
     @Test
@@ -141,7 +144,7 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
 
         ClientInitialAccessPresentation initialAccess = testAdminClient.realm(realm).clientInitialAccess().create(rep);
         JsonWebToken token = new JWSInput(initialAccess.getToken()).readJsonContent(JsonWebToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, token.getRealm());
 
         ClientRegistration clientReg = ClientRegistration.create().url(authServerUrl, realm).build();
@@ -153,7 +156,7 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
 
         String registrationAccessToken = response.getRegistrationAccessToken();
         JsonWebToken registrationToken = new JWSInput(registrationAccessToken).readJsonContent(JsonWebToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, registrationToken.getRealm());
     }
 
@@ -163,14 +166,14 @@ public class FixedHostnameTest extends AbstractKeycloakTest {
         OAuthClient.AccessTokenResponse tokenResponse = oauth.doGrantAccessTokenRequest("password", "test-user@localhost", "password");
 
         AccessToken token = new JWSInput(tokenResponse.getAccessToken()).readJsonContent(AccessToken.class);
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, token.getRealm());
 
         String introspection = oauth.introspectAccessTokenWithClientCredential(oauth.getClientId(), "password", tokenResponse.getAccessToken());
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode introspectionNode = objectMapper.readTree(introspection);
         assertTrue(introspectionNode.get("active").asBoolean());
-        // NOTE(angelinsky7): no need to store realm name in issuer anymore
+        // TODO(demarco): no need to store realm name in issuer anymore
         assertEquals(expectedBaseUrl + "/auth/realms/" + realm, introspectionNode.get("realm").asText());
     }
 

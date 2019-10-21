@@ -17,38 +17,18 @@
 
 package org.keycloak.models.cache.infinispan;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.keycloak.Config;
 import org.keycloak.common.enums.SslRequired;
 import org.keycloak.component.ComponentModel;
-import org.keycloak.models.AuthenticationExecutionModel;
-import org.keycloak.models.AuthenticationFlowModel;
-import org.keycloak.models.AuthenticatorConfigModel;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.ClientScopeModel;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.IdentityProviderMapperModel;
-import org.keycloak.models.IdentityProviderModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.OTPPolicy;
-import org.keycloak.models.PasswordPolicy;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RequiredActionProviderModel;
-import org.keycloak.models.RequiredCredentialModel;
-import org.keycloak.models.RoleModel;
+import org.keycloak.models.*;
 import org.keycloak.models.cache.CachedRealmModel;
 import org.keycloak.models.cache.UserCache;
 import org.keycloak.models.cache.infinispan.entities.CachedRealm;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.client.ClientStorageProvider;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -409,18 +389,6 @@ public class RealmAdapter implements CachedRealmModel {
     }
 
     @Override
-    public void setRealmUrlCheckDeactivated(Boolean realmUrlCheckDeactivated){
-        getDelegateForUpdate();
-        updated.setRealmUrlCheckDeactivated(realmUrlCheckDeactivated);
-    }
-
-    @Override
-    public Boolean isRealmUrlCheckDeactivated(){
-        if (isUpdated()) return updated.isRealmUrlCheckDeactivated();
-        return cached.isRealmUrlCheckDeactivated();
-    }
-
-    @Override
     public boolean isRevokeRefreshToken() {
         if (isUpdated()) return updated.isRevokeRefreshToken();
         return cached.isRevokeRefreshToken();
@@ -669,6 +637,18 @@ public class RealmAdapter implements CachedRealmModel {
         getDelegateForUpdate();
         updated.setOTPPolicy(policy);
 
+    }
+
+    @Override
+    public WebAuthnPolicy getWebAuthnPolicy() {
+        if (isUpdated()) return updated.getWebAuthnPolicy();
+        return cached.getWebAuthnPolicy();
+    }
+
+    @Override
+    public void setWebAuthnPolicy(WebAuthnPolicy policy) {
+        getDelegateForUpdate();
+        updated.setWebAuthnPolicy(policy);
     }
 
     @Override
