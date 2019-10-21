@@ -16,6 +16,17 @@
  */
 package org.keycloak.protocol.oidc.endpoints;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
@@ -35,7 +46,6 @@ import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionContext;
-import org.keycloak.models.TokenManager;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
@@ -52,16 +62,6 @@ import org.keycloak.services.resources.Cors;
 import org.keycloak.services.util.DefaultClientSessionContext;
 import org.keycloak.services.util.MtlsHoKTokenUtil;
 import org.keycloak.utils.MediaType;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author pedroigor
@@ -132,11 +132,13 @@ public class UserInfoEndpoint {
 
         AccessToken token;
         String realmUrl = Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName());
+        String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
         
         try {
             TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withDefaultChecks()
                     .realmUrl(realmUrl)
-                    .issuerUrl(realm.getIssuerUrlOrDefault(realmUrl));
+                    .issuerUrl(issuerUrl)
+                    .checkRealmUrl(realmUrl.equals(issuerUrl) || !realm.isRealmUrlCheckDeactivated());
 
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
@@ -204,8 +206,6 @@ public class UserInfoEndpoint {
         OIDCAdvancedConfigWrapper cfg = OIDCAdvancedConfigWrapper.fromClientModel(clientModel);
 
         if (cfg.isUserInfoSignatureRequired()) {
-            String issuerUrl = realm.getIssuerUrlOrDefault(realmUrl);
-
             String audience = clientModel.getClientId();
             claims.put("iss", issuerUrl);
             claims.put("realm", realmUrl);
